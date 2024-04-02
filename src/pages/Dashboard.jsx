@@ -1,75 +1,72 @@
-import React from 'react'
-import { useState } from 'react';
-import {useEffect} from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
-function Dashboard() {
-  useEffect(() => {
-    // Initialize Materialize dropdown
-    const dropdownElement = document.querySelectorAll('.dropdown-trigger');
-    M.Dropdown.init(dropdownElement);
-  }, []);
-  // const [formData, setFormData] = useState({
-  //   name: '',
-  //   email: '',
-  //   age: '',
-  //   message: ''
-  // });
+const Dashboard = () => {
+  const [requestType, setRequestType] = useState(null);
+  const [thunderingherdOption, setThunderingherdOption] = useState(null);
+  const [taskrunnerOption, setTaskrunnerOption] = useState(null);
 
-  // const handleChange = (e) => {
-  //   setFormData({ ...formData, [e.target.id]: e.target.value });
-  // };
+  const [taskrunner, thunderingHerd, OnPrem] = [['telnet', 'selects', 'mySQL process list'], [], ['validation']];
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log(formData); // Output formData object to console
+  // Handle the state for each requestType.
+  const handleChange = (e, selectType) => {
+    e.preventDefault();
+    switch (selectType) {
+      case 'requestType':
+        setRequestType(e.target.value);
+        break;
+      case 'thunderingherdOption':
+        setThunderingherdOption(e.target.value);
+        break;
+      case 'taskrunnerOption':
+        setTaskrunnerOption(e.target.value);
+        break;
+      default:
+        console.log('In Switch case: uh oh');
+    }
+  };
 
+  let options;
+  if (requestType === 'ThunderingHerd') {
+    options = thunderingHerd.map((option, i) => (
+      <option key={i} value={option}>
+        {option}
+      </option>
+    ));
+  } else if (requestType === 'Taskrunner') {
+    options = taskrunner.map((option, i) => (
+      <option key={i} value={option}>
+        {option}
+      </option>
+    ));
+  }
 
   return (
-    <div className="container">
-    <div className="row">
-      <div className="col s12">
-        <table className="bordered">
-          <thead>
-            <tr>
-              <th>Automation</th>
-              <th>Job</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Thunderingherd</td>
-              <td>
-                <a className='dropdown-trigger btn' href='/' data-target='dropdown1'>
-                  Options<i className="material-icons right">arrow_drop_down</i>
-                </a>
-                <ul id='dropdown1' className='dropdown-content'>
-                  <li><a href="#!">TH-Job</a></li>
-                </ul>
-              </td>
-            </tr>
-            <tr>
-              <td>Taskrunner</td>
-              <td>
-                <a className='dropdown-trigger btn' href='/' data-target='dropdown2'>
-                  Options<i className="material-icons right">arrow_drop_down</i>
-                </a>
-                <ul id='dropdown2' className='dropdown-content'>
-                  <li><a href="#!">telnet</a></li>
-                  <li><a href="#!">mysql process list</a></li>
-                  <li><a href="#!">mysql select statements</a></li>
-                  <li><a href="#!">performance object queries</a></li>
-                </ul>
-              </td>
-            </tr>
-            {/* Add more rows as needed */}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+    <form>
+      <label htmlFor="">Reported by</label>
+      <input type="reported by" />
+      <label htmlFor="">Product</label>
+      <input type="product" />
+      <label>Request Type</label>
+      <select value={requestType} onChange={(e) => handleChange(e, 'requestType')}>
+        <option value="">--Please choose an option--</option>
+        <option value="ThunderingHerd">ThunderingHerd</option>
+        <option value="Taskrunner">Taskrunner</option>
+      </select>
+      <label htmlFor="">Instance Name</label>
+      <input type="InstanceName" />
 
+      {requestType && (
+        <>
+          <label htmlFor='automation_job'>{requestType}</label>
+          <select name={requestType} onChange={(e) => handleChange(e, requestType)}>
+            {options}
+          </select>
+        </>
+
+      )}
+    </form>
   );
-}
+};
 
 export default Dashboard;
